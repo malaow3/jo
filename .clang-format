@@ -1,0 +1,6 @@
+BasedOnStyle: Google
+# IndentWidth: 4
+AllowShortFunctionsOnASingleLine: Empty
+# BraceWrapping:
+#   AfterFunction: true
+# ColumnLimit: 120

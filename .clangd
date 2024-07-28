@@ -1,0 +1,2 @@
+CompileFlags:
+  Add: [-I./build/vcpkg_installed/x64-linux/include]
