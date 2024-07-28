@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.20)
 
 project(jo)
 
-# Use c++23
+# Use C++23
 set(CMAKE_CXX_STANDARD 23)
 
 include(ProcessorCount)
@@ -22,9 +22,6 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
 # Export compile commands for clangd
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-
-set(CMAKE_CXX_STANDARD 23)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(fmt CONFIG REQUIRED)
 find_package(CLI11 CONFIG REQUIRED)

@@ -1,2 +1,6 @@
 CompileFlags:
-  Add: [-I./build/vcpkg_installed/x64-linux/include]
+  Add: [
+    -std=c++20,
+    -I./build/vcpkg_installed/x64-linux/include
+    -DDEBUG
+  ]
