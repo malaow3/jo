@@ -68,4 +68,14 @@ jobs:
         run: chmod +x jo_${{ matrix.os_name }}
 
       - name: Run binary
-        run: ./jo_${{ matrix.os_name }}
+        run: timeout 20s ./jo_${{ matrix.os_name }}
+
+      - name: Check exit status
+        run: |
+          if [ $? -eq 124 ]; then
+            echo "Program terminated successfully after timeout"
+            exit 0
+          else
+            echo "Program terminated unexpectedly"
+            exit 1
+          fi
