@@ -1,6 +1,6 @@
 #include <fmt/format.h>
 
-#if defined(__darwin__)
+#if defined(__APPLE__)
 const char platform[] = "macOS";
 #elif defined(__linux__)
 const char platform[] = "Linux";

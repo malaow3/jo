@@ -4,7 +4,9 @@
 BUILD_TYPE=${BUILD_TYPE:-Release}
 
 # Create build directory if it doesn't exist
-mkdir -p build
+if [ ! -d build ]; then
+    cmake --preset=default
+fi
 
 # Check if CMakeCache.txt exists
 if [ ! -f build/CMakeCache.txt ]; then
@@ -14,7 +16,12 @@ fi
 
 # Write the output to a temp file and print it if the command fails
 temp=$(mktemp)
-cmake --build build -j$(nproc) > "$temp" 2>&1
+# if on mac, we can't use -j$(nproc) so we'll use something else
+if [ "$(uname)" == "Darwin" ]; then
+    cmake --build build -j$(sysctl -n hw.logicalcpu) > "$temp" 2>&1
+else
+    cmake --build build -j$(nproc) > "$temp" 2>&1
+fi
 
 if [ $? -ne 0 ]; then
     echo "Build failed:"
