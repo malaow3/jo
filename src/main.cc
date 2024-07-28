@@ -1,7 +1,9 @@
 #include <fmt/format.h>
 
 #include <CLI/CLI.hpp>
+#include <chrono>
 #include <string>
+#include <thread>
 
 /*#include "./debug.hpp"*/
 
@@ -34,10 +36,8 @@ const platform_t platform = macOS;
 #include <stdint.h>
 
 #include <atomic>
-#include <chrono>
 #include <fstream>
 #include <sstream>
-#include <thread>
 const platform_t platform = Linux;
 
 #elif defined(_WIN32)
