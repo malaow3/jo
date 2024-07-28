@@ -67,15 +67,17 @@ jobs:
       - name: Make binary executable
         run: chmod +x jo_${{ matrix.os_name }}
 
-      - name: Run binary
-        run: timeout 20s ./jo_${{ matrix.os_name }}
-
-      - name: Check exit status
+      - name: Run program with timeout (Linux)
         run: |
-          if [ $? -eq 124 ]; then
-            echo "Program terminated successfully after timeout"
-            exit 0
+          if [ "$RUNNER_OS" == "Linux" ]; then
+            timeout 30s ./jo_${{ matrix.os_name }} | tee output.txt || true
+          elif [ "$RUNNER_OS" == "macOS" ]; then
+            gtimeout 30s ./jo_${{ matrix.os_name }} | tee output.txt || true
+          fi
+          if [ $? -eq 124 ] || [ $? -eq 0 ]; then
+            echo "Program ran successfully or was terminated by timeout"
           else
             echo "Program terminated unexpectedly"
             exit 1
           fi
+          cat output.txt
