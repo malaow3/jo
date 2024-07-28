@@ -10,7 +10,15 @@ const char platform[] = "Windows";
 const char platform[] = "Unknown";
 #endif
 
+struct version_t {
+  int major;
+  int minor;
+  int patch;
+};
+
+const version_t version = {0, 1, 0};
+
 int main(int argc, char **argv) {
-  fmt::print("Hello, world!\n");
-  fmt::print("Platform: {}\n", platform);
+  fmt::print("jo version {}.{}.{} - {}\n", version.major, version.minor,
+             version.patch, platform);
 }
