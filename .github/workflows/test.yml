@@ -70,9 +70,9 @@ jobs:
       - name: Run program with timeout (Linux)
         run: |
           if [ "$RUNNER_OS" == "Linux" ]; then
-            timeout 30s ./jo_${{ matrix.os_name }} | tee output.txt || true
+            timeout 30s ./jo_linux | tee output.txt || true
           elif [ "$RUNNER_OS" == "macOS" ]; then
-            gtimeout 30s ./jo_${{ matrix.os_name }} | tee output.txt || true
+            gtimeout 30s ./jo_mac | tee output.txt || true
           fi
           if [ $? -eq 124 ] || [ $? -eq 0 ]; then
             echo "Program ran successfully or was terminated by timeout"
