@@ -67,17 +67,32 @@ jobs:
       - name: Make binary executable
         run: chmod +x jo_${{ matrix.os_name }}
 
-      - name: Run program with timeout (Linux)
+      - name: Run program with timeout
         run: |
           if [ "$RUNNER_OS" == "Linux" ]; then
-            timeout 30s ./jo_linux | tee output.txt || true
+            EXECUTABLE="./jo_linux"
+            COMMAND="timeout 10s"
           elif [ "$RUNNER_OS" == "macOS" ]; then
-            gtimeout 30s ./jo_mac | tee output.txt || true
+            brew install coreutils
+            EXECUTABLE="./jo_mac"
+            COMMAND="gtimeout 10s"
+          else
+            echo "Unsupported OS"
+            exit 1
           fi
-          if [ $? -eq 124 ] || [ $? -eq 0 ]; then
+          touch output.txt
+
+          set -o pipefail
+          $COMMAND $EXECUTABLE;
+          EXIT_CODE=$?
+          RETURN_CODE=0
+          if [ $EXIT_CODE -eq 0 ]; then
+            echo "Program ran successfully"
+          elif [ $EXIT_CODE -eq 124 ]; then
             echo "Program ran successfully or was terminated by timeout"
           else
             echo "Program terminated unexpectedly"
-            exit 1
+            RETURN_CODE=1
           fi
-          cat output.txt
+
+          exit $RETURN_CODE
