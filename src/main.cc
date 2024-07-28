@@ -1,5 +1,6 @@
 #include <fmt/format.h>
 
+#include <CLI/CLI.hpp>
 #include <string>
 
 /*#include "./debug.hpp"*/
@@ -60,6 +61,11 @@ void mac_info();
 void linux_info();
 
 int main(int argc, char** argv) {
+  CLI::App app;
+  bool timeout{false};
+  app.add_flag("-t", timeout, "timeout after 10 seconds");
+  CLI11_PARSE(app, argc, argv);
+
   fmt::print("jo version {}.{}.{} - {}\n", version.major, version.minor,
              version.patch, to_string(platform));
 
@@ -68,7 +74,18 @@ int main(int argc, char** argv) {
       mac_info();
       break;
     case Linux:
-      linux_info();
+      // If timeout is true, run the linux_info function with a timeout of 10
+      // seconds
+      if (timeout) {
+        std::thread t(linux_info);
+        t.detach();
+        std::this_thread::sleep_for(std::chrono::seconds(10));
+        if (t.joinable()) {
+          t.join();
+        }
+      } else {
+        linux_info();
+      }
     case Windows:
       break;
     case Unknown:

@@ -28,33 +28,33 @@ jobs:
             console.log("Workflow Run ID:", context.payload.workflow_run.id);
             console.log("Workflow Run Number:", context.payload.workflow_run.run_number);
             console.log("Workflow Name:", context.payload.workflow_run.name);
-            
+
             const artifacts = await github.rest.actions.listWorkflowRunArtifacts({
               owner: context.repo.owner,
               repo: context.repo.repo,
               run_id: context.payload.workflow_run.id
             });
-            
+
             console.log("All artifacts:", artifacts.data.artifacts.map(a => a.name));
-            
+
             const matchArtifact = artifacts.data.artifacts.find((artifact) => {
               return artifact.name == "jo_${{ matrix.os_name }}"
             });
-            
+
             if (!matchArtifact) {
               core.setFailed(`No artifact found with name jo_${{ matrix.os_name }}`);
               return;
             }
-            
+
             console.log("Matching artifact:", matchArtifact);
-            
+
             const download = await github.rest.actions.downloadArtifact({
               owner: context.repo.owner,
               repo: context.repo.repo,
               artifact_id: matchArtifact.id,
               archive_format: 'zip',
             });
-            
+
             fs.writeFileSync('artifact.zip', Buffer.from(download.data));
             console.log("Artifact downloaded and saved as artifact.zip");
 
@@ -63,35 +63,9 @@ jobs:
 
       - name: Run ls
         run: ls -la
-        
+
       - name: Make binary executable
         run: chmod +x jo_${{ matrix.os_name }}
 
-      - name: Run program with timeout
-        run: |
-          if [ "$RUNNER_OS" == "Linux" ]; then
-            EXECUTABLE="./jo_linux"
-            COMMAND="timeout 10s"
-          elif [ "$RUNNER_OS" == "macOS" ]; then
-            brew install coreutils
-            EXECUTABLE="./jo_mac"
-            COMMAND="gtimeout 10s"
-          else
-            echo "Unsupported OS"
-            exit 1
-          fi
-          touch output.txt
-
-          set -o pipefail
-          STATUS=$COMMAND $EXECUTABLE > output.txt 2>&1;
-          RETURN_CODE=0
-          if [ $STATUS -eq 0 ]; then
-            echo "Program ran successfully"
-          elif [ $STATUS -eq 124 ]; then
-            echo "Program ran successfully or was terminated by timeout"
-          else
-            echo "Program terminated unexpectedly"
-            RETURN_CODE=1
-          fi
-          cat output.txt
-          exit $RETURN_CODE
+      - name: Run binary
+        run: ./jo_${{ matrix.os_name }} -t
