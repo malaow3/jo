@@ -77,7 +77,7 @@ int main(int argc, char **argv) {
 #endif
 
 #ifdef PLATFORM_LINUX
-  return 1;
+  return 0;
 #endif
 
 #ifdef PLATFORM_WINDOWS
