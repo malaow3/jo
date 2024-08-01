@@ -86,9 +86,13 @@ int main(int argc, char** argv) {
       } else {
         linux_info();
       }
+      break;
     case Windows:
+      fmt::print("Windows platform is not supported at the moment\n");
       break;
     case Unknown:
+      fmt::print("Unknown platform\n");
+      fmt::print("Currently supported platforms: macOS, Linux\n");
       break;
   }
 }
